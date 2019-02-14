@@ -12,6 +12,14 @@ class ADF4351:
         RPi.GPIO.setup(self.le_pin, RPi.GPIO.OUT)
         RPi.GPIO.setup(self.data_pin, RPi.GPIO.OUT)
         RPi.GPIO.setup(self.clk_pin, RPi.GPIO.OUT)
+        
+        RPi.GPIO.setup(self.ce_pin, RPi.GPIO.OUT)
+        RPi.GPIO.output(self.ce_pin, 1)
+        
+        RPi.GPIO.setup(self.pdrf_pin, RPi.GPIO.OUT)
+        RPi.GPIO.output(self.pdrf_pin, 1)
+        
+        RPi.GPIO.setup(self.ld_pin, RPi.GPIO.IN)
 
     def shutdown(self):
         RPi.GPIO.cleanup()
@@ -115,6 +123,9 @@ class ADF4351:
         self.write_register(reg1)
         self.write_register(reg0)
 
+        time.sleep(1)
+        print RPi.GPIO.input(self.ld_pin)
+
     def write_register(self, value):
         RPi.GPIO.output(self.clk_pin, 0)
         RPi.GPIO.output(self.le_pin, 0)
@@ -179,9 +190,14 @@ class ADF4351:
 
     # SPI bus
     le_pin = 25
-    data_pin = 10
-    clk_pin = 11
-
+    #data_pin = 10
+    #clk_pin = 11
+    
+    clk_pin = 10
+    data_pin = 11
+    ce_pin = 9
+    pdrf_pin = 8
+    ld_pin = 24
 
 if __name__ == '__main__':
     adf4351 = ADF4351()
