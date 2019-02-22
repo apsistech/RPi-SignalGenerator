@@ -43,8 +43,13 @@ class ADF4351:
         elif frequency >= 68.75e6 and frequency < 137.5e6:
             self.rf_divider_select_value = 5
 
+        elif frequency >= 34.375e6 and frequency < 68.75e6:
+            self.rf_divider_select_value = 6
+
         f_pfd = 25e6
 
+        print 'frequency = %.2f MHz' % (frequency / 1e6)
+        print 'Divider select value = ', self.rf_divider_select_value
         #print (frequency / f_pfd) * (2**self.rf_divider_select_value)
         self.int_value = int((frequency / f_pfd) * (2**self.rf_divider_select_value))
 
