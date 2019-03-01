@@ -25,7 +25,7 @@ class ADF4351:
         RPi.GPIO.cleanup()
 
     def set_frequency(self, frequency=1e9):
-        if frequency > 2.2e9 and frequency < 4.4e9:
+        if frequency >= 2.2e9 and frequency < 4.4e9:
             self.rf_divider_select_value = 0
 
         elif frequency >= 1.1e9 and frequency < 2.2e9:
