@@ -10,9 +10,9 @@ class RPi_SignalGenerator:
         bus.write_byte_data(0x22, 0x0D, 0x00)
 
         # Initialize oscillator
-        bus.write_byte_data(0x23, 0x0C, 0x00)
-        bus.write_byte_data(0x23, 0x0D, 0x02)
-        bus.write_byte_data(0x23, 0x0E, 0x00)
+        #bus.write_byte_data(0x23, 0x0C, 0x00)
+        #bus.write_byte_data(0x23, 0x0D, 0x02)
+        #bus.write_byte_data(0x23, 0x0E, 0x00)
 
         bus.close()
 
