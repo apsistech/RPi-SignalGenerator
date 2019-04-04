@@ -24,7 +24,7 @@ class ADF4351:
     def shutdown(self):
         RPi.GPIO.cleanup()
 
-    def set_frequency(self, frequency=1e9):
+    def set_frequency(self, frequency=1e9, verbose=False):
         if frequency >= 2.2e9 and frequency < 4.4e9:
             self.rf_divider_select_value = 0
 
@@ -48,9 +48,11 @@ class ADF4351:
 
         f_pfd = 25e6
 
-        print 'frequency = %.2f MHz' % (frequency / 1e6)
-        print 'Divider select value = ', self.rf_divider_select_value
-        #print (frequency / f_pfd) * (2**self.rf_divider_select_value)
+        if verbose:
+            print 'frequency = %.2f MHz' % (frequency / 1e6)
+            print 'Divider select value = ', self.rf_divider_select_value
+            #print (frequency / f_pfd) * (2**self.rf_divider_select_value)
+
         self.int_value = int((frequency / f_pfd) * (2**self.rf_divider_select_value))
 
         #print self.int_value
@@ -62,9 +64,10 @@ class ADF4351:
         self.frac_value = self.frac_value / gcd_value
         self.modulus_value = self.modulus_value / gcd_value
 
-        print self.rf_divider_select_value, self.int_value, self.frac_value, self.modulus_value
+        if verbose:
+            print self.rf_divider_select_value, self.int_value, self.frac_value, self.modulus_value
 
-    def write_registers(self):
+    def write_registers(self, verbose=False):
         reg0 = 0b000
         reg0 = reg0 + (self.frac_value << 3)
         reg0 = reg0 + (self.int_value << 15)
@@ -114,12 +117,13 @@ class ADF4351:
         reg5 = reg5 + (0b11 << 19)
         reg5 = reg5 + (self.ld_pin_mode_value << 22)
 
-        print '0x%x' % reg5
-        print '0x%x' % reg4
-        print '0x%x' % reg3
-        print '0x%x' % reg2
-        print '0x%x' % reg1
-        print '0x%x' % reg0
+        if verbose:
+            print '0x%x' % reg5
+            print '0x%x' % reg4
+            print '0x%x' % reg3
+            print '0x%x' % reg2
+            print '0x%x' % reg1
+            print '0x%x' % reg0
 
         self.write_register(reg5)
         self.write_register(reg4)
@@ -128,8 +132,10 @@ class ADF4351:
         self.write_register(reg1)
         self.write_register(reg0)
 
-        time.sleep(1)
-        print RPi.GPIO.input(self.ld_pin)
+        time.sleep(0.1)
+
+        if verbose:
+            print RPi.GPIO.input(self.ld_pin)
 
     def write_register(self, value):
         RPi.GPIO.output(self.clk_pin, 0)
@@ -188,10 +194,10 @@ class ADF4351:
     aux_output_enable_value = 0b0
     aux_output_power_value = 0b00
     rf_output_enable_value = 0b1
-    output_power_value = 0b00
+    output_power_value = 0b11
 
     # Reg 5
-    ld_pin_mode_value = 0x01
+    ld_pin_mode_value = 0b01
 
     # SPI bus
     le_pin = 25
@@ -205,10 +211,17 @@ class ADF4351:
     ld_pin = 24
 
 if __name__ == '__main__':
-    adf4351 = ADF4351()
-    adf4351.initialize()
-    adf4351.set_frequency(float(sys.argv[1]))
-    adf4351.write_registers()
-    adf4351.shutdown()
+    if len(sys.argv) == 1:
+        adf4351 = ADF4351()
+        adf4351.initialize()
+        adf4351.power_down_value = 1
+        adf4351.write_registers(verbose=True)
+        adf4351.shutdown()
 
+    elif len(sys.argv) > 1:
+        adf4351 = ADF4351()
+        adf4351.initialize()
+        adf4351.set_frequency(float(sys.argv[1]), verbose=True)
+        adf4351.write_registers(verbose=True)
+        adf4351.shutdown()
 
