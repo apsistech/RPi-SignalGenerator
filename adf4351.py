@@ -138,18 +138,27 @@ class ADF4351:
             print RPi.GPIO.input(self.ld_pin)
 
     def write_register(self, value):
+        sleep_const = 0.001
         RPi.GPIO.output(self.clk_pin, 0)
+        time.sleep(sleep_const)
         RPi.GPIO.output(self.le_pin, 0)
+        time.sleep(sleep_const)
 
         for n in range(0, 32):
             RPi.GPIO.output(self.data_pin, (value >> (31-n)) & 0x01)
+            time.sleep(sleep_const)
             RPi.GPIO.output(self.clk_pin, 0)
+            time.sleep(sleep_const)
             RPi.GPIO.output(self.clk_pin, 1)
+            time.sleep(sleep_const)
 
         RPi.GPIO.output(self.clk_pin, 0)
+        time.sleep(sleep_const)
 
         RPi.GPIO.output(self.le_pin, 1)
+        time.sleep(sleep_const)
         RPi.GPIO.output(self.le_pin, 0)
+        time.sleep(sleep_const)
 
     # Reg 0
     int_value = 160
@@ -200,15 +209,23 @@ class ADF4351:
     ld_pin_mode_value = 0b01
 
     # SPI bus
-    le_pin = 25
-    #data_pin = 10
-    #clk_pin = 11
+    #le_pin = 25
+    le_pin = 6
     
-    clk_pin = 10
-    data_pin = 11
-    ce_pin = 9
-    pdrf_pin = 8
-    ld_pin = 24
+    #clk_pin = 10
+    clk_pin = 19
+    
+    #data_pin = 11
+    data_pin = 13
+    
+    #ce_pin = 9
+    ce_pin = 5
+    
+    #pdrf_pin = 8
+    pdrf_pin = 20
+    
+    #ld_pin = 24
+    ld_pin = 21
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
