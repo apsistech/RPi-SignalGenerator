@@ -12,13 +12,13 @@ rf_power_detector = RFPowerDetector()
 
 handle = open('output.csv', 'w')
 
-frequencies = np.linspace(100e6, 3800e6, 100)
+frequencies = np.linspace(800e6, 1100e6, 20)
 for frequency in frequencies:
     adf4351.set_frequency(frequency)
     adf4351.write_registers()
     #time.sleep(1)
-    print '%.2f, %.2f' % (frequency/1e6, rf_power_detector.measure_power())
-    handle.write('%.2f, %.2f' % (frequency/1e6, rf_power_detector.measure_power()))
+    #print '%.2f, %.2f' % (frequency/1e6, rf_power_detector.measure_power())
+    #handle.write('%.2f, %.2f' % (frequency/1e6, rf_power_detector.measure_power()))
 
 handle.close()
 adf4351.power_down_value = 1
